@@ -1,0 +1,82 @@
+syntax = "v1"
+
+info(
+	title: user api
+	desc: false
+	author: risin
+	email: risin@risin.work
+	version: 0.1.0
+)
+
+type LoginReq {
+	Username string `form:"username"`
+	Password string `form:"password"`
+}
+
+type LoginReply {
+	Id            int64  `json:"id"`
+	Username      string `json:"username"`
+	Gender        string `json:"gender"`
+	AccessToken   string `json:"accessToken"`
+	AccessExpire  int64  `json:"accessExpire"`
+	RefreshToken  string `json:"refreshToken"`
+	RefreshExpire int64  `json:"refreshExpire"`
+}
+
+type RegisterReq {
+	Username string `form:"username"`
+	Password string `form:"password"`
+	Gender   string `form:"gender,default=none,options=male|female|none"`
+}
+
+type UpdateInfoReq {
+	Username string `json:"username,optional"`
+	Gender   string `json:"gender,optional"`
+}
+
+type UpdatePwdReq {
+	OldPassword string `form:"old_password"`
+	NewPassword string `form:"new_password"`
+}
+
+type TokenRefreshReply {
+	AccessToken   string `json:"accessToken"`
+	AccessExpire  int64  `json:"accessExpire"`
+	RefreshToken  string `json:"refreshToken"`
+	RefreshExpire int64  `json:"refreshExpire"`
+}
+
+@server(
+	group: user
+	prefix: user
+)
+service user-api {
+	@handler login
+	post /login (LoginReq) returns (LoginReply)
+	
+	@handler register
+	post /register (RegisterReq) returns (LoginReply)
+}
+
+@server(
+	jwt: Auth
+	group: user
+	prefix: user
+)
+service user-api {
+	@handler updateInfo
+	post /info (UpdateInfoReq)
+	
+	@handler updatePwd
+	post /pwd (UpdatePwdReq)
+}
+
+@server(
+	jwt: Refresh
+	group: user
+	prefix: user
+)
+service user-api {
+	@handler refreshToken
+	get /token returns (TokenRefreshReply)
+}

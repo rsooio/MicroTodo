@@ -1,0 +1,14 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8888
+Mysql:
+  DataSource: todo@tcp(localhost:3306)/micro_todo?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Type: node
+Auth:
+  AccessSecret: 1bee7c8278c6d0cab656a9b8b4d8670285da19a11da0bda2c3e0f03745e3fa5f
+  AccessExpire: 7200
+Refresh:
+  AccessSecret: 194b2a081da0d822606ef4a6483133e35f264fa8d0deab6df0fb05d1363b03b8
+  AccessExpire: 86400
