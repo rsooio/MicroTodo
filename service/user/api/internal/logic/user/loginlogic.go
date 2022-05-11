@@ -8,7 +8,7 @@ import (
 	"micro-todo/service/user/api/internal/svc"
 	"micro-todo/service/user/api/internal/types"
 	"micro-todo/service/user/model"
-	"micro-todo/util/bcrypt"
+	"micro-todo/utils/bcrypt"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/zeromicro/go-zero/core/logx"

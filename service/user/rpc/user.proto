@@ -4,6 +4,15 @@ package user;
 
 option go_package = "./user";
 
-message t{
+message AuthReq {
+    string token = 1;
+}
 
+message AuthReply {
+    bool success = 1;
+    string msg = 2;
+}
+
+service user {
+    rpc auth (AuthReq) returns (AuthReply);
 }
