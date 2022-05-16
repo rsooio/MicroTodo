@@ -1,9 +1,9 @@
 Name: user.rpc
-ListenOn: 127.0.0.1:8080
+ListenOn: 127.0.0.1:9002
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: user.rpc
-Auth:
+AuthInfo:
   AccessSecret: 1bee7c8278c6d0cab656a9b8b4d8670285da19a11da0bda2c3e0f03745e3fa5f
   AccessExpire: 7200

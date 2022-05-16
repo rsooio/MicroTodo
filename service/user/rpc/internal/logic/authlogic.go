@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"errors"
 
 	"micro-todo/service/user/rpc/internal/svc"
 	"micro-todo/service/user/rpc/types/user"
@@ -24,29 +25,33 @@ func NewAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AuthLogic {
 	}
 }
 
-func (l *AuthLogic) Auth(in *user.AuthReq) (*user.AuthReply, error) {
-	success := false
-	msg := ""
-
-	token, err := jwt.Parse(in.Token, func(t *jwt.Token) (interface{}, error) {
-		return []byte(l.svcCtx.Config.Auth.AccessSecret), nil
+func (l *AuthLogic) Auth(in *user.AuthReq) (out *user.AuthReply, err error) {
+	token, err := jwt.ParseWithClaims(in.Token, jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(l.svcCtx.Config.AuthInfo.AccessSecret), nil
 	})
 
 	if err != nil {
-		msg = err.Error()
-	} else if !token.Valid {
-		msg = "invalid auth token"
-	} else {
-		_, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			msg = "no auth params"
-		} else {
-			success = true
-		}
+		return nil, err
 	}
 
-	return &user.AuthReply{
-		Success: success,
-		Msg:     msg,
-	}, nil
+	if !token.Valid {
+		return nil, errors.New("invalid auth token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, errors.New("no auth params")
+	}
+
+	uid, ok := claims["uid"]
+	if !ok {
+		return nil, errors.New("auth params error 1")
+	}
+
+	userId, ok := uid.(float64)
+	if !ok {
+		return nil, errors.New("auth params error 2")
+	}
+
+	return &user.AuthReply{Uid: int64(userId)}, nil
 }

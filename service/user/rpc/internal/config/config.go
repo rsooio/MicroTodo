@@ -5,7 +5,7 @@ import "github.com/zeromicro/go-zero/zrpc"
 type Config struct {
 	zrpc.RpcServerConf
 
-	Auth struct {
+	AuthInfo struct {
 		AccessSecret string
 		AccessExpire int64
 	}

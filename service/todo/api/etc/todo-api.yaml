@@ -1,0 +1,13 @@
+Name: todo-api
+Host: 0.0.0.0
+Port: 9003
+Mysql:
+  DataSource: todo@tcp(localhost:3306)/micro_todo?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Type: node
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc

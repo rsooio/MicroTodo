@@ -1,0 +1,93 @@
+syntax = "v1"
+
+info(
+	title: todo api
+	desc: false
+	author: risin
+	email: risin@risin.work
+	version: 0.1.0
+)
+
+type CreateReq {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+type PartialUpdateReq {
+	Id      int64  `path:"id"`
+	Title   string `json:"title,optional"`
+	Content string `json:"content,optional"`
+}
+
+type UpdateReq {
+	Id      int64  `path:"id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+type DoneReq {
+	Id    int64 `path:"id"`
+	State bool  `form:"state,optional,default=true"`
+}
+
+type BatchDoneReq {
+	State bool `form:"state"`
+}
+
+type GetTodoListReq {
+	Type       string `form:"tp,optional,options=all|done|todo,default=all"`
+	KeyWorld   string `form:"kw,optional,default="`
+	PageNumber int    `form:"pn,optional,default=1"`
+	PageSize   int    `form:"ps,optional,default=20,range=[1:100]"`
+}
+
+type TodoReply {
+	Id      int64  `json:"id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+	Done    bool   `json:"done"`
+}
+
+type GetTodoListReply {
+	Count    int         `json:"count"`
+	TodoList []TodoReply `json:"todolist"`
+}
+
+type DeleteReq {
+	Id int64 `path:"id"`
+}
+
+type BatchDeleteReq {
+	Type string `form:"tp,options=all|done|todo"`
+}
+
+@server(
+	group: todo
+	prefix: todo
+	middleware: Auth
+)
+service todo-api {
+	@handler Create
+	post / (CreateReq)
+	
+	@handler PartialUpdate
+	patch /:id (PartialUpdateReq)
+	
+	@handler Update
+	put /:id (UpdateReq)
+	
+	@handler Done
+	put /done/:id (DoneReq)
+	
+	@handler BatchDone
+	put /done (BatchDoneReq)
+	
+	@handler GetTodoList
+	get / (GetTodoListReq) returns(GetTodoListReply)
+	
+	@handler Delete
+	delete /:id (DeleteReq)
+	
+	@handler BatchDelete
+	delete / (BatchDeleteReq)
+}
